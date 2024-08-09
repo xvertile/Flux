@@ -1,0 +1,77 @@
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    user: "101:101"
+    container_name: clickhouse
+    hostname: clickhouse
+    environment:
+      - allow_experimental_join_condition=1
+    networks:
+      - flux-network
+    volumes:
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+      - ${PWD}/fs/volumes/clickhouse/etc/clickhouse-server/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml
+      - clickhouse-data:/var/lib/clickhouse
+    ports:
+      - "127.0.0.1:8123:8123"
+      - "127.0.0.1:9000:9000"
+
+  grafana:
+    build:
+      context: ${PWD}/docker_files
+      dockerfile: grafana.Dockerfile
+    container_name: grafana
+    hostname: grafana
+    networks:
+      - flux-network
+    ports:
+      - "0.0.0.0:3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=flux
+      - GF_SECURITY_ADMIN_PASSWORD=flux
+      - GF_SERVER_HTTP_ADDR=0.0.0.0
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_ALLOW_ORG_CREATE=false
+    volumes:
+      - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ${PWD}/fs/volumes/grafana/etc/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ${PWD}/fs/volumes/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - clickhouse
+  webserver:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.webserver
+    container_name: flux-webserver
+    ports:
+      - "8080:8080"
+    environment:
+      - MAXMIND_DB_PATH=/app/pkg/maxmind/GeoLite2-City.mmdb
+    depends_on:
+      - clickhouse
+    networks:
+      - flux-network
+  runner:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.runner
+    container_name: flux-runner
+    privileged: true
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65533
+    environment:
+      - MAXMIND_DB_PATH=/app/pkg/maxmind/GeoLite2-City.mmdb
+    depends_on:
+      - clickhouse
+    networks:
+      - flux-network
+
+networks:
+  flux-network:
+    external: true
+
+volumes:
+  clickhouse-data:
+  backups:

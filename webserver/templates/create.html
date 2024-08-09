@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Job</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Create Job</h1>
+    <form action="/job/create" method="POST">
+        <div class="mb-3">
+            <label for="job_name" class="form-label">Job Name:</label>
+            <input placeholder="oxylabs premium job" type="text" id="job_name" name="job_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="provider_name" class="form-label">Provider Name:</label>
+            <input placeholder="oxylabs" type="text" id="provider_name" name="provider_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="proxy" class="form-label">Proxy:</label>
+            <input placeholder="http://username:password@127.0.0.1:8080" type="text" id="proxy" name="proxy" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="pool" class="form-label">Pool:</label>
+            <input placeholder="default/premium" type="text" id="pool" name="pool" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="type" class="form-label">Type:</label>
+            <input placeholder="residential/datacenter/isp/etc" type="text" id="type" name="type" class="form-control">
+        </div>
+
+
+        <div class="mb-3">
+            <label for="threads" class="form-label">Threads:</label>
+            <input value="200" type="number" id="threads" name="threads" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label for="url" class="form-label">URL:</label>
+            <input value="http://icanhazip.com" type="text" id="url" name="url" class="form-control">
+        </div>
+
+        <button type="submit" class="btn btn-success">Create</button>
+    </form>
+</div>
+</body>
+</html>

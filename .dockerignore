@@ -1,0 +1,7 @@
+.git
+node_modules
+tmp
+.git/
+.idea/
+venv/
+docker

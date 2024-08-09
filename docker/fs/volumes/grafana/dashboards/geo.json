@@ -1,0 +1,247 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "fdnzarjdxr9xcb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 16,
+        "w": 22,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "right",
+          "showLegend": false,
+          "values": []
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "fdnzarjdxr9xcb"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.0.8",
+          "queryType": "table",
+          "rawSql": "SELECT\n    CountryISOCode,\n    COUNT(DISTINCT IP) AS UniqueIPCount\nFROM\n    proxy_requests\nWHERE\n    ProviderName = '${Providername}'\nGROUP BY\n    CountryISOCode\nORDER BY\n    UniqueIPCount DESC\n    limit 10;\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Unique Ips per country per provider",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "fdnzarjdxr9xcb"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 22,
+        "x": 0,
+        "y": 16
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "10.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "fdnzarjdxr9xcb"
+          },
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.0.8",
+          "queryType": "table",
+          "rawSql": "SELECT\r\n    ProviderName,\r\n    Pool,\r\n    COUNT(DISTINCT IP) AS UniqueCountryCount\r\nFROM proxy_requests\r\nWHERE CountryISOCode = '${CountryCode}'\r\n  AND Success = 1\r\n  AND position(IP, ':') = 0\r\nGROUP BY\r\n    ProviderName,\r\n    Pool\r\nORDER BY\r\n    UniqueCountryCount DESC;\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "table"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "",
+          "value": ""
+        },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "fdnzarjdxr9xcb"
+        },
+        "definition": "SELECT DISTINCT CountryISOCode\nFROM proxy_requests\nORDER BY CountryISOCode;\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "CountryCode",
+        "multi": false,
+        "name": "CountryCode",
+        "options": [],
+        "query": "SELECT DISTINCT CountryISOCode\nFROM proxy_requests\nORDER BY CountryISOCode;\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "AuraProxies",
+          "value": "AuraProxies"
+        },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "fdnzarjdxr9xcb"
+        },
+        "definition": "SELECT\n    DISTINCT ProviderName\nFROM\n    proxy_requests\nORDER BY\n    ProviderName;\n",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Providername",
+        "multi": false,
+        "name": "Providername",
+        "options": [],
+        "query": "SELECT\n    DISTINCT ProviderName\nFROM\n    proxy_requests\nORDER BY\n    ProviderName;\n",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Proxies Geo Data",
+  "uid": "edsn9wenq22o0e",
+  "version": 3,
+  "weekStart": ""
+}
