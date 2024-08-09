@@ -1,5 +1,5 @@
 # Flux - Advanced Proxy Monitoring Tool
-
+![Flux Providers](images/providers.png)
 ## Overview
 
 **Flux** is a powerful tool designed to monitor proxy providers across the industry, analyzing response times, uptime, outgoing IPs, and more. With Flux, you can uncover the true performance and integrity of proxy providers, ensuring you're working with reliable data and not falling for misleading claims.
@@ -32,6 +32,15 @@ cd flux/docker
 
 ### Run flux
 
+On windows set the PWD variable to the current directory. Linux/Macos users can skip this step.
+```bash
+set PWD=%cd%
+```
+Creating the docker network
+```bash
+docker network create flux-network
+```
+Running the docker-compose file
 ```bash
 docker-compose up -d --build
 ```
@@ -60,16 +69,17 @@ We have preconfigured dashboards for you to visualize the data collected by flux
 ## Preconfigured Dashboards and collected data
 ### Preconfigured Dashboards
 Flux comes with preconfigured dashboards to help you visualize the data collected by the tool. These dashboards provide insights into the performance and reliability of proxy providers, allowing you to make informed decisions based on real data.
+![Unique Ip Count](images/unique.png)
+![Response Time](images/countries.png)
+![Kocer](images/providers.png)
+![Kocer](images/kocer.png)
+
 ### Collected Data
 We have done a prior analysis of multiple proxy providers; these include:
-- RoxLabs
 - OxyLabs
-- Hproxy
 - LightningProxies
 - RainProxy
-- ProxiesFO
 - IpRoyal
-- Ipldea
 - GeoNode
 - ZettaProxies
 - InfiniteProxies
@@ -85,10 +95,10 @@ We have done a prior analysis of multiple proxy providers; these include:
 - Kocer
 - NodeMaven
 
-This list contains over 22 million data points.
+This list contains over 222 million data points. If you would like to get a copy of this data, please reach out to us at [daan@bytezero.io](mailto:daan@bytezero.io)
+
 ## License
 Flux is licensed under the MIT License. See `LICENSE` for more information.
-
 
 ## Contact
 For questions or support, please reach out via [daan@bytezero.io](mailto:daan@bytezero.io) or open an issue on GitHub.
