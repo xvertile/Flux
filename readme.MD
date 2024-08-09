@@ -61,6 +61,7 @@ Jobs are a core component of Flux, responsible for running checks on proxies and
 - **Proxy Type**: The type of proxies to be checked (e.g., `Residential`, `Datacenter`, `Mobile`).
 - **Threads**: The number of threads to use when checking proxies. More threads allow more proxies to be checked simultaneously but consume more resources. The recommended value is 50. Flux reuses HTTP clients to minimize resource consumption, so fewer threads can still achieve great speeds. For example, in testing, 150 threads completed 100,000 checks in 3 minutes.
 - **URL**: The URL against which the proxy will be checked. This should be a URL that returns a 200 status code and displays the IP address when accessed (e.g., `https://icanhazip.com`, `https://wtfismyip.com/text`). The recommended URL is `icanhazip.com` due to its speed and lack of rate limiting.
+![Jobs](images/jobs.png)
 
 ## Grafana
 Grafana is used to plot the data collected by flux. You can access the Grafana dashboard at `http://localhost:3000` with the default credentials `flux:flux`.
