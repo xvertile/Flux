@@ -176,7 +176,7 @@ func StopJob(jobName string) error {
 	return nil
 }
 func GetAllJobs() ([]Job, error) {
-	rows, err := db.Query(`SELECT JobName, ProviderName, Proxy, Pool, Type, Status, Threads, URL FROM jobs`)
+	rows, err := db.Query(`SELECT JobName, ProviderName, Proxy, Pool, Type, Status, Threads, URL FROM jobs ORDER BY Status`)
 	if err != nil {
 		log.Printf("Failed to get all jobs: %v", err)
 		return nil, err
