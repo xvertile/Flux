@@ -94,10 +94,11 @@ func runJob(ctx context.Context, job database.Job) {
 	results := make(chan database.RequestData, job.Threads*10)
 
 	for i := 0; i < job.Threads; i++ {
+		job.Proxy = strings.TrimSpace(job.Proxy)
 		client, err := roundtrip.NewHTTPClient(job.Proxy)
 		if err != nil {
 			err = database.UpdateJobStatus(job.JobName, "failed")
-			log.Fatalf("Failed to create HTTP client: %v", err)
+			log.Printf("Failed to create HTTP client: %v", err)
 		}
 		clientPool <- client
 	}

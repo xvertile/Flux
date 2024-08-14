@@ -206,7 +206,7 @@ func GetPendingJobs() ([]Job, error) {
 	rows, err := db.Query(`
 	SELECT JobName, ProviderName, Proxy, Pool, Type, Status, Threads, URL
 	FROM jobs
-	WHERE Status NOT IN ('running')
+	WHERE Status NOT IN ('running', 'failed')
 	`)
 	if err != nil {
 		log.Printf("Failed to get pending jobs: %v", err)
