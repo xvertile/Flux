@@ -85,7 +85,7 @@ We have done a prior analysis of multiple proxy providers; these include:
 - ZettaProxies
 - InfiniteProxies
 - ProxiesGG
-- JoinMassive
+- Massive
 - NetNut
 - NimbleWay
 - BrightData
