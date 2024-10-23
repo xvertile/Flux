@@ -1,0 +1,50 @@
+{
+    "panels": [
+      {
+        "title": "Proxy Detection Results",
+        "type": "gauge",
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "fdnzarjdxr9xcb"
+        },
+        "targets": [
+          {
+            "rawSql": "SELECT 
+              ProviderName,
+              countIf(is_proxy = 1) * 100.0 / count() as proxy_percentage
+            FROM proxy_requests 
+            WHERE RequestTime >= now() - INTERVAL 1 DAY
+            GROUP BY ProviderName
+            ORDER BY proxy_percentage DESC",
+            "refId": "A"
+          }
+        ],
+        "options": {
+          "orientation": "horizontal",
+          "reduceOptions": {
+            "calcs": ["mean"],
+            "fields": "",
+            "values": true
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                { "color": "green", "value": null },
+                { "color": "yellow", "value": 30 },
+                { "color": "red", "value": 60 }
+              ]
+            },
+            "unit": "percent"
+          }
+        }
+      }
+    ]
+  }

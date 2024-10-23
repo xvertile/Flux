@@ -66,3 +66,9 @@ CREATE TABLE IF NOT EXISTS job_heartbeats
 ) ENGINE = MergeTree()
       ORDER BY (JobName, Timestamp)
       SETTINGS index_granularity = 8192;
+
+ALTER TABLE proxy_requests
+    ADD COLUMN IF NOT EXISTS is_proxy UInt8,
+    ADD COLUMN IF NOT EXISTS proxy_type String,
+    ADD COLUMN IF NOT EXISTS vpn_score Float64,
+    ADD COLUMN IF NOT EXISTS proxy_provider String;

@@ -187,13 +187,21 @@ func runJob(ctx context.Context, job database.Job) {
 		var batch []database.RequestData
 
 		for result := range results {
-			batch = append(batch, result)
-			if len(batch) >= batchSize {
-				if err := database.InsertRequests(batch); err != nil {
-					log.Printf("Failed to insert batch: %v", err)
-				}
-				batch = batch[:0]
-			}
+            repData, err := ipreputation.CheckIPReputation(result.IP)
+            if err == nil {
+                result.IsProxy = boolToUint8(repData.IsProxy)
+                result.ProxyType = repData.ProxyType
+                result.VPNScore = repData.VPNScore
+                result.ProxyProvider = repData.ProxyProvider
+            }
+
+            batch = append(batch, result)
+            if len(batch) >= batchSize {
+                if err := database.InsertRequests(batch); err != nil {
+                    log.Printf("Failed to insert batch: %v", err)
+                }
+                batch = batch[:0]
+            }
 		}
 
 		if len(batch) > 0 {
@@ -221,6 +229,13 @@ func runJob(ctx context.Context, job database.Job) {
 			log.Printf("Failed to update job status to completed: %v", err)
 		}
 	}
+}
+
+func boolToUint8(b bool) uint8 {
+    if b {
+        return 1
+    }
+    return 0
 }
 
 func cancelJob(jobName string) {

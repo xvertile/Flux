@@ -52,36 +52,51 @@ type RequestData struct {
 	Success       uint8
 	ProxyType     string
 	Pool          string
+	IsProxy      uint8  
+    ProxyType    string 
+    VPNScore     float64
+    ProxyProvider string 
 }
 
 func InsertRequests(requests []RequestData) error {
-	tx, err := db.Begin()
-	if err != nil {
-		log.Printf("Failed to begin transaction: %v", err)
-		return err
-	}
+    tx, err := db.Begin()
+    if err != nil {
+        return err
+    }
 
-	stmt, err := tx.Prepare(`INSERT INTO proxy_requests (ProviderName, IP, TimeTaken, StatusCode, RequestTime, ContinentCode, ContinentName, CountryISOCode, CountryName, CityName, Latitude, Longitude, AccuracyRadius, TimeZone, PostalCode, ErrorMessage, Success, Type, Pool) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-	if err != nil {
-		log.Printf("Failed to prepare statement: %v", err)
-		return err
-	}
-	defer stmt.Close()
+    stmt, err := tx.Prepare(`
+        INSERT INTO proxy_requests (
+            ProviderName, IP, TimeTaken, StatusCode, RequestTime, 
+            ContinentCode, ContinentName, CountryISOCode, CountryName, 
+            CityName, Latitude, Longitude, AccuracyRadius, TimeZone, 
+            PostalCode, ErrorMessage, Success, Type, Pool,
+            is_proxy, proxy_type, vpn_score, proxy_provider
+        ) VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 
+            ?, ?, ?, ?
+        )
+    `)
+    if err != nil {
+        return err
+    }
+    defer stmt.Close()
 
-	for _, req := range requests {
-		_, err := stmt.Exec(req.ProviderID, req.IP, req.TimeTaken, req.StatusCode, req.RequestTime, req.ContinentCode, req.ContinentName, req.CountryISO, req.CountryName, req.CityName, req.Latitude, req.Longitude, req.Accuracy, req.TimeZone, req.PostalCode, req.ErrorMessage, req.Success, req.ProxyType, req.Pool)
-		if err != nil {
-			log.Printf("Failed to execute statement: %v", err)
-			return err
-		}
-	}
+    for _, req := range requests {
+        _, err := stmt.Exec(
+            req.ProviderID, req.IP, req.TimeTaken, req.StatusCode, 
+            req.RequestTime, req.ContinentCode, req.ContinentName, 
+            req.CountryISO, req.CountryName, req.CityName, 
+            req.Latitude, req.Longitude, req.Accuracy, req.TimeZone, 
+            req.PostalCode, req.ErrorMessage, req.Success, 
+            req.ProxyType, req.Pool, req.IsProxy, req.ProxyType, 
+            req.VPNScore, req.ProxyProvider,
+        )
+        if err != nil {
+            return err
+        }
+    }
 
-	if err := tx.Commit(); err != nil {
-		log.Printf("Failed to commit transaction: %v", err)
-		return err
-	}
-
-	return nil
+    return tx.Commit()
 }
 
 func GetProviderByName(providerName string) (string, error) {
