@@ -335,6 +335,22 @@ CREATE TABLE IF NOT EXISTS jobs
 	if _, err := db.Exec(query); err != nil {
 		panic(err)
 	}
+	//ALTER TABLE proxy_requests
+	//    ADD COLUMN IF NOT EXISTS is_proxy UInt8,
+	//    ADD COLUMN IF NOT EXISTS proxy_type String,
+	//    ADD COLUMN IF NOT EXISTS vpn_score Float64,
+	//    ADD COLUMN IF NOT EXISTS proxy_provider String;
+
+	query = `ALTER TABLE proxy_requests
+    ADD COLUMN IF NOT EXISTS is_proxy UInt8,
+    ADD COLUMN IF NOT EXISTS proxy_type String,
+    ADD COLUMN IF NOT EXISTS vpn_score Float64,
+    ADD COLUMN IF NOT EXISTS proxy_provider String;
+`
+	if _, err := db.Exec(query); err != nil {
+		panic(err)
+	}
+	
 }
 
 type Job struct {
