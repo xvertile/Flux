@@ -160,7 +160,6 @@ func runJob(ctx context.Context, job database.Job) {
 						ProxyType:     job.Type,
 						Pool:          job.Pool,
 					}
-					log.Printf("Inserted: %+v", inserted)
 					results <- inserted
 					clientPool <- client
 				}
