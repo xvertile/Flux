@@ -52,18 +52,19 @@ type RequestData struct {
 	Success       uint8
 	ProxyType     string
 	Pool          string
-	IsProxy       uint8
-	VPNScore      float64
-	ProxyProvider string
+	IsProxy      uint8  
+    ProxyType    string 
+    VPNScore     float64
+    ProxyProvider string 
 }
 
 func InsertRequests(requests []RequestData) error {
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
+    tx, err := db.Begin()
+    if err != nil {
+        return err
+    }
 
-	stmt, err := tx.Prepare(`
+    stmt, err := tx.Prepare(`
         INSERT INTO proxy_requests (
             ProviderName, IP, TimeTaken, StatusCode, RequestTime, 
             ContinentCode, ContinentName, CountryISOCode, CountryName, 
@@ -75,27 +76,27 @@ func InsertRequests(requests []RequestData) error {
             ?, ?, ?, ?
         )
     `)
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
+    if err != nil {
+        return err
+    }
+    defer stmt.Close()
 
-	for _, req := range requests {
-		_, err := stmt.Exec(
-			req.ProviderID, req.IP, req.TimeTaken, req.StatusCode,
-			req.RequestTime, req.ContinentCode, req.ContinentName,
-			req.CountryISO, req.CountryName, req.CityName,
-			req.Latitude, req.Longitude, req.Accuracy, req.TimeZone,
-			req.PostalCode, req.ErrorMessage, req.Success,
-			req.ProxyType, req.Pool, req.IsProxy, req.ProxyType,
-			req.VPNScore, req.ProxyProvider,
-		)
-		if err != nil {
-			return err
-		}
-	}
+    for _, req := range requests {
+        _, err := stmt.Exec(
+            req.ProviderID, req.IP, req.TimeTaken, req.StatusCode, 
+            req.RequestTime, req.ContinentCode, req.ContinentName, 
+            req.CountryISO, req.CountryName, req.CityName, 
+            req.Latitude, req.Longitude, req.Accuracy, req.TimeZone, 
+            req.PostalCode, req.ErrorMessage, req.Success, 
+            req.ProxyType, req.Pool, req.IsProxy, req.ProxyType, 
+            req.VPNScore, req.ProxyProvider,
+        )
+        if err != nil {
+            return err
+        }
+    }
 
-	return tx.Commit()
+    return tx.Commit()
 }
 
 func GetProviderByName(providerName string) (string, error) {

@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	ipreputation2 "flux/pkg/ipreputation"
-	"flux/pkg/maxmind"
 	"log"
 	"net"
 	"net/http"
@@ -14,6 +12,7 @@ import (
 	"flux/internal/database"
 	"flux/internal/request"
 	"flux/internal/roundtrip"
+	"flux/pkg/maxmind"
 )
 
 var jobCancelMap sync.Map
@@ -188,21 +187,21 @@ func runJob(ctx context.Context, job database.Job) {
 		var batch []database.RequestData
 
 		for result := range results {
-			repData, err := ipreputation2.CheckIPReputation(result.IP)
-			if err == nil {
-				result.IsProxy = boolToUint8(repData.IsProxy)
-				result.ProxyType = repData.ProxyType
-				result.VPNScore = repData.VPNScore
-				result.ProxyProvider = repData.ProxyProvider
-			}
+            repData, err := ipreputation.CheckIPReputation(result.IP)
+            if err == nil {
+                result.IsProxy = boolToUint8(repData.IsProxy)
+                result.ProxyType = repData.ProxyType
+                result.VPNScore = repData.VPNScore
+                result.ProxyProvider = repData.ProxyProvider
+            }
 
-			batch = append(batch, result)
-			if len(batch) >= batchSize {
-				if err := database.InsertRequests(batch); err != nil {
-					log.Printf("Failed to insert batch: %v", err)
-				}
-				batch = batch[:0]
-			}
+            batch = append(batch, result)
+            if len(batch) >= batchSize {
+                if err := database.InsertRequests(batch); err != nil {
+                    log.Printf("Failed to insert batch: %v", err)
+                }
+                batch = batch[:0]
+            }
 		}
 
 		if len(batch) > 0 {
@@ -233,10 +232,10 @@ func runJob(ctx context.Context, job database.Job) {
 }
 
 func boolToUint8(b bool) uint8 {
-	if b {
-		return 1
-	}
-	return 0
+    if b {
+        return 1
+    }
+    return 0
 }
 
 func cancelJob(jobName string) {
